@@ -1,0 +1,9 @@
+black
+flake8
+isort
+pip
+python-dotenv
+-e .
+cookiecutter-data-science==2.0.0
+rarfile==4.2
+openpyxl==3.1.5
