@@ -33,14 +33,16 @@ with ZipFile(
         df_streamgages = pd.read_excel(f)
 
     for _ in range(2008, 2018):
-        df_pack = pd.read_html(archive.open(f'Нижняя Тунгуска {_}.xls'))
-        for df in df_pack:
-            dfs.append(df)
+        with archive.open(f'Нижняя Тунгуска {_}.xls') as f:
+            df_pack = pd.read_html(f)
+            for df in df_pack:
+                dfs.append(df)
 
     for _ in range(2008, 2018):
-        df_pack = pd.read_html(archive.open(f'Подкаменная Тунгуска {_}.xls'))
-        for df in df_pack:
-            dfs.append(df)
+        with archive.open(f'Подкаменная Тунгуска {_}.xls') as f:
+            df_pack = pd.read_html(f)
+            for df in df_pack:
+                dfs.append(df)
 
 print(df_streamgages)
 print(len(dfs))
