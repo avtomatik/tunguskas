@@ -3,5 +3,6 @@ flake8
 isort
 pip
 python-dotenv
--e .
+# -e .
 cookiecutter-data-science==2.0.0
+pandas==2.2.3
