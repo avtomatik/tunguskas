@@ -117,22 +117,31 @@ with ZipFile(
     df = pd.concat(dfs)
 
     df['date'] = df.apply(get_date, axis=1)
+
     df.dropna(inplace=True)
+
     df['gauge_zero'] = df['gauge_zero'].apply(pd.to_numeric)
     df['value'] = df['value'].apply(swap_value)
 
     df.drop(df.columns[range(2)], axis=1, inplace=True)
     df.drop(df.columns[range(1, 2)], axis=1, inplace=True)
 
-    columns_shuffled = [
+    df[['value', 'legend']] = df['value'].str.extract(
+        r'(?P<reading>\d+)(?P<legend> \D+)?',
+        expand=True
+    )
+
+    df['legend'] = df['legend'].str.strip()
+    df['value'] = df['value'].apply(pd.to_numeric, downcast='integer')
+
+    columns_re_shuffled = [
         'location',
         'river_post',
         'post_id',
+        'legend',
         'date',
         'gauge_zero',
         'value'
     ]
 
-# =============================================================================
-# TODO: Split `value`
-# =============================================================================
+    print(df[columns_re_shuffled])
