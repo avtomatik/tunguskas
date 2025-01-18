@@ -7,6 +7,7 @@ Created on Thu Oct 20 21:47:18 2022
 """
 
 import datetime
+import re
 from pathlib import Path
 from zipfile import ZipFile
 
@@ -20,6 +21,8 @@ FILE_NAME = 'archive.zip' or 'urovni_p_i_n_tunguski.rar'
 # =============================================================================
 # DataFrames Shapes & Count:
 # =============================================================================
+SHAPE_STAMPS = (5, 2)
+SHAPE_DATA = (40, 13)
 # =============================================================================
 # {
 #     (5, 2): 263, # Stamps
@@ -42,6 +45,13 @@ def get_date(row):
         return
 
 
+def swap_value(value):
+    match = re.search(r'(?P<legend>\D+) (?P<reading>\d+)', value)
+    if match:
+        return f"{match.group('reading')} {match.group('legend')}"
+    return value
+
+
 with ZipFile(
     (
         Path(__file__).parent.parent
@@ -56,63 +66,60 @@ with ZipFile(
     with archive.open('!Уровни постов.xlsx') as f:
         df_streamgages = pd.read_excel(f)
 
-    for _ in range(2008, 2018):
-        with archive.open(f'Нижняя Тунгуска {_}.xls') as f:
+    for year in range(2008, 2018):
+        with archive.open(f'Нижняя Тунгуска {year}.xls') as f:
+            location = 'Lower Tunguska'
             df_pack = pd.read_html(f)
 
-            for df in df_pack:
-                if df.shape == (5, 2):
-                    (
-                        post_id, _, river_post, gauge_zero, elevation_system
-                    ) = list(df.iloc[:, -1])
-                elif df.shape == (40, 13):
-                    df.drop(range(2), inplace=True)
-                    df.drop(df.tail(7).index, inplace=True)
-                    chunk = pd.melt(
-                        df,
-                        id_vars=df.columns[0],
-                        value_vars=df.columns[1:],
+            for chunk in df_pack:
+                if chunk.shape == SHAPE_STAMPS:
+                    post_id, _, river_post, gauge_zero, _ = chunk.iloc[:, -1]
+                elif chunk.shape == SHAPE_DATA:
+                    chunk.drop(range(2), inplace=True)
+                    chunk.drop(chunk.tail(7).index, inplace=True)
+                    df = pd.melt(
+                        chunk,
+                        id_vars=chunk.columns[0],
+                        value_vars=chunk.columns[1:],
                         ignore_index=False
                     )
-                    chunk['year'] = _
-                    chunk['location'] = 'Lower Tunguska'
-                    chunk['post_id'] = post_id
-                    chunk['river_post'] = river_post
-                    chunk['gauge_zero'] = gauge_zero
-                    chunk['elevation_system'] = elevation_system
-                    dfs.append(chunk)
+                    df['year'] = year
+                    df['location'] = location
+                    df['post_id'] = post_id
+                    df['river_post'] = river_post
+                    df['gauge_zero'] = gauge_zero
+                    dfs.append(df)
 
-    for _ in range(2008, 2018):
-        with archive.open(f'Подкаменная Тунгуска {_}.xls') as f:
+    for year in range(2008, 2018):
+        with archive.open(f'Подкаменная Тунгуска {year}.xls') as f:
+            location = 'Stony Tunguska'
             df_pack = pd.read_html(f)
 
-            for df in df_pack:
-                if df.shape == (5, 2):
-                    (
-                        post_id, _, river_post, gauge_zero, elevation_system
-                    ) = list(df.iloc[:, -1])
-                elif df.shape == (40, 13):
-                    df.drop(range(2), inplace=True)
-                    df.drop(df.tail(7).index, inplace=True)
-                    chunk = pd.melt(
-                        df,
-                        id_vars=df.columns[0],
-                        value_vars=df.columns[1:],
+            for chunk in df_pack:
+                if chunk.shape == SHAPE_STAMPS:
+                    post_id, _, river_post, gauge_zero, _ = chunk.iloc[:, -1]
+                elif chunk.shape == SHAPE_DATA:
+                    chunk.drop(range(2), inplace=True)
+                    chunk.drop(chunk.tail(7).index, inplace=True)
+                    df = pd.melt(
+                        chunk,
+                        id_vars=chunk.columns[0],
+                        value_vars=chunk.columns[1:],
                         ignore_index=False
                     )
-                    chunk['year'] = _
-                    chunk['location'] = 'Stony Tunguska'
-                    chunk['post_id'] = post_id
-                    chunk['river_post'] = river_post
-                    chunk['gauge_zero'] = gauge_zero
-                    chunk['elevation_system'] = elevation_system
-                    dfs.append(chunk)
+                    df['year'] = year
+                    df['location'] = location
+                    df['post_id'] = post_id
+                    df['river_post'] = river_post
+                    df['gauge_zero'] = gauge_zero
+                    dfs.append(df)
 
     df = pd.concat(dfs)
 
     df['date'] = df.apply(get_date, axis=1)
     df.dropna(inplace=True)
     df['gauge_zero'] = df['gauge_zero'].apply(pd.to_numeric)
+    df['value'] = df['value'].apply(swap_value)
 
     df.drop(df.columns[range(2)], axis=1, inplace=True)
     df.drop(df.columns[range(1, 2)], axis=1, inplace=True)
@@ -121,7 +128,6 @@ with ZipFile(
         'location',
         'river_post',
         'post_id',
-        'elevation_system',
         'date',
         'gauge_zero',
         'value'
