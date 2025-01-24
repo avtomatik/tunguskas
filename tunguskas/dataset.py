@@ -144,4 +144,12 @@ with ZipFile(
         'value'
     ]
 
-    print(df[columns_re_shuffled])
+    df[columns_re_shuffled].to_csv(
+        (
+            Path(__file__).parent.parent
+            .joinpath('data')
+            .joinpath('processed')
+            .joinpath('dataset.csv')
+        ),
+        index=False
+    )
