@@ -13,29 +13,7 @@ from zipfile import ZipFile
 
 import pandas as pd
 
-# =============================================================================
-# TODO: https://git-lfs.com
-# =============================================================================
-FILE_NAME = 'archive.zip' or 'urovni_p_i_n_tunguski.rar'
-
-# =============================================================================
-# DataFrames Shapes & Count:
-# =============================================================================
-SHAPE_STAMPS = (5, 2)
-SHAPE_DATA = (40, 13)
-# =============================================================================
-# {
-#     (5, 2): 263, # Stamps
-#     (40, 13): $$$, # Core Data
-#     (52, 2): 20, # Legend Same
-#     (25, 2): 20, # Legend Same
-#     (24, 2): 20,  # Legend Same
-#     (739, 13): 2,  # Lower Tunguska :: 2014 & 2015
-#     (788, 13): 2,  # Lower Tunguska :: 2016 & 2017
-#     (641, 13): 2,  # Stony Tunguska :: 2014 & 2015
-#     (690, 13): 2,  # Stony Tunguska :: 2016 & 2017
-# }
-# =============================================================================
+from .config import COLUMNS_RE_SHUFFLED, FILE_NAME, SHAPE_DATA, SHAPE_STAMPS
 
 
 def get_date(row):
@@ -134,17 +112,7 @@ with ZipFile(
     df['legend'] = df['legend'].str.strip()
     df['value'] = df['value'].apply(pd.to_numeric, downcast='integer')
 
-    columns_re_shuffled = [
-        'location',
-        'river_post',
-        'post_id',
-        'legend',
-        'date',
-        'gauge_zero',
-        'value'
-    ]
-
-    df[columns_re_shuffled].to_csv(
+    df[COLUMNS_RE_SHUFFLED].to_csv(
         (
             Path(__file__).parent.parent
             .joinpath('data')
