@@ -8,12 +8,12 @@ Created on Thu Oct 20 21:47:18 2022
 
 import datetime
 import re
-from pathlib import Path
 from zipfile import ZipFile
 
 import pandas as pd
 
-from .config import COLUMNS_RE_SHUFFLED, FILE_NAME, SHAPE_DATA, SHAPE_STAMPS
+from .config import (COLUMNS_RE_SHUFFLED, DATA_DIR, FILE_NAME, SHAPE_DATA,
+                     SHAPE_STAMPS)
 
 
 def get_date(row):
@@ -30,14 +30,7 @@ def swap_value(value):
     return value
 
 
-with ZipFile(
-    (
-        Path(__file__).parent.parent
-        .joinpath('data')
-        .joinpath('raw')
-        .joinpath(FILE_NAME)
-    )
-) as archive:
+with ZipFile(DATA_DIR.joinpath('raw').joinpath(FILE_NAME)) as archive:
 
     dfs = []
 
@@ -113,11 +106,6 @@ with ZipFile(
     df['value'] = df['value'].apply(pd.to_numeric, downcast='integer')
 
     df[COLUMNS_RE_SHUFFLED].to_csv(
-        (
-            Path(__file__).parent.parent
-            .joinpath('data')
-            .joinpath('processed')
-            .joinpath('dataset.csv')
-        ),
+        DATA_DIR.joinpath('processed').joinpath('dataset.csv'),
         index=False
     )

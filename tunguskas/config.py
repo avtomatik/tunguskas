@@ -12,6 +12,10 @@ Created on Thu Jan 30 23:03:58 2025
 # =============================================================================
 # TODO: Find Good Tool to Read `.rar`-Archives
 # =============================================================================
+from pathlib import Path
+
+DATA_DIR = Path(__file__).parent.parent.joinpath('data')
+
 FILE_NAME_ORIGINAL = 'urovni_p_i_n_tunguski.rar'
 
 FILE_NAME = 'archive.zip'
