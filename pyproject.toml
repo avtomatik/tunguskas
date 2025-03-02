@@ -1,0 +1,20 @@
+[project]
+name = "tunguskas"
+version = "0.1.0"
+description = "Lower Tunguska \u0026 Stony Tunguska Rivers' Levels Analysis"
+authors = [
+  { name = "Alexander Mikhailov" },
+]
+license = { file = "LICENSE" }
+readme = "README.md"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License"
+]
+requires-python = ">=3.14"
+dependencies = [
+    "duckdb>=1.5.3",
+    "lxml>=6.1.1",
+    "matplotlib>=3.10.9",
+    "pandas>=3.0.3",
+]

@@ -169,3 +169,12 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# Apple Desktop Services Store
+.DS_Store
+
+# DuckDB
+*.duckdb
+
+# VS Code
+.vscode/
