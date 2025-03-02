@@ -41,7 +41,7 @@ SHAPE_DATA = (40, 13)
 
 SHAPE_STAMPS = (5, 2)
 
-COLUMNS_RE_SHUFFLED = (
+COLUMNS_RE_SHUFFLED = [
     'location',
     'river_post',
     'post_id',
@@ -49,4 +49,4 @@ COLUMNS_RE_SHUFFLED = (
     'date',
     'gauge_zero',
     'value'
-)
+]

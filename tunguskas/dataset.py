@@ -34,9 +34,6 @@ with ZipFile(DATA_DIR.joinpath('raw').joinpath(FILE_NAME)) as archive:
 
     dfs = []
 
-    with archive.open('!Уровни постов.xlsx') as f:
-        df_streamgages = pd.read_excel(f)
-
     for year in range(2008, 2018):
         with archive.open(f'Нижняя Тунгуска {year}.xls') as f:
             location = 'Lower Tunguska'
@@ -85,27 +82,27 @@ with ZipFile(DATA_DIR.joinpath('raw').joinpath(FILE_NAME)) as archive:
                     df['gauge_zero'] = gauge_zero
                     dfs.append(df)
 
-    df = pd.concat(dfs)
+df = pd.concat(dfs)
 
-    df['date'] = df.apply(get_date, axis=1)
+df['date'] = df.apply(get_date, axis=1)
 
-    df.dropna(inplace=True)
+df.dropna(inplace=True)
 
-    df['gauge_zero'] = df['gauge_zero'].apply(pd.to_numeric)
-    df['value'] = df['value'].apply(swap_value)
+df['gauge_zero'] = df['gauge_zero'].apply(pd.to_numeric)
+df['value'] = df['value'].apply(swap_value)
 
-    df.drop(df.columns[range(2)], axis=1, inplace=True)
-    df.drop(df.columns[range(1, 2)], axis=1, inplace=True)
+df.drop(df.columns[range(2)], axis=1, inplace=True)
+df.drop(df.columns[range(1, 2)], axis=1, inplace=True)
 
-    df[['value', 'legend']] = df['value'].str.extract(
-        r'(?P<reading>\d+)(?P<legend> \D+)?',
-        expand=True
-    )
+df[['value', 'legend']] = df['value'].str.extract(
+    r'(?P<reading>\d+)(?P<legend> \D+)?',
+    expand=True
+)
 
-    df['legend'] = df['legend'].str.strip()
-    df['value'] = df['value'].apply(pd.to_numeric, downcast='integer')
+df['legend'] = df['legend'].str.strip()
+df['value'] = df['value'].apply(pd.to_numeric, downcast='integer')
 
-    df[COLUMNS_RE_SHUFFLED].to_csv(
-        DATA_DIR.joinpath('processed').joinpath('dataset.csv'),
-        index=False
-    )
+df[COLUMNS_RE_SHUFFLED].to_csv(
+    DATA_DIR.joinpath('processed').joinpath('dataset.csv'),
+    index=False
+)
