@@ -12,7 +12,15 @@ Created on Thu Jan 30 23:03:58 2025
 # =============================================================================
 # TODO: Find Good Tool to Read `.rar`-Archives
 # =============================================================================
+from enum import Enum
 from pathlib import Path
+
+
+class Shape(Enum):
+
+    DATA = 40, 13
+    STAMPS = 5, 2
+
 
 DATA_DIR = Path(__file__).parent.parent.joinpath('data')
 
@@ -36,10 +44,6 @@ FILE_NAME = 'archive.zip'
 #     (690, 13): 2,  # Stony Tunguska :: 2016 & 2017
 # }
 # =============================================================================
-
-SHAPE_DATA = (40, 13)
-
-SHAPE_STAMPS = (5, 2)
 
 COLUMNS_RE_SHUFFLED = [
     'location',

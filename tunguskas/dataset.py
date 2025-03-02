@@ -12,8 +12,7 @@ from zipfile import ZipFile
 
 import pandas as pd
 
-from .config import (COLUMNS_RE_SHUFFLED, DATA_DIR, FILE_NAME, SHAPE_DATA,
-                     SHAPE_STAMPS)
+from .config import COLUMNS_RE_SHUFFLED, DATA_DIR, FILE_NAME, Shape
 
 
 def get_date(row):
@@ -40,9 +39,9 @@ with ZipFile(DATA_DIR.joinpath('raw').joinpath(FILE_NAME)) as archive:
             df_pack = pd.read_html(f)
 
             for chunk in df_pack:
-                if chunk.shape == SHAPE_STAMPS:
+                if chunk.shape == Shape.STAMPS.value:
                     post_id, _, river_post, gauge_zero, _ = chunk.iloc[:, -1]
-                elif chunk.shape == SHAPE_DATA:
+                elif chunk.shape == Shape.DATA.value:
                     chunk.drop(range(2), inplace=True)
                     chunk.drop(chunk.tail(7).index, inplace=True)
                     df = pd.melt(
@@ -64,9 +63,9 @@ with ZipFile(DATA_DIR.joinpath('raw').joinpath(FILE_NAME)) as archive:
             df_pack = pd.read_html(f)
 
             for chunk in df_pack:
-                if chunk.shape == SHAPE_STAMPS:
+                if chunk.shape == Shape.STAMPS.value:
                     post_id, _, river_post, gauge_zero, _ = chunk.iloc[:, -1]
-                elif chunk.shape == SHAPE_DATA:
+                elif chunk.shape == Shape.DATA.value:
                     chunk.drop(range(2), inplace=True)
                     chunk.drop(chunk.tail(7).index, inplace=True)
                     df = pd.melt(
