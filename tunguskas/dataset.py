@@ -98,15 +98,13 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
 
 def save_processed_data(df: pd.DataFrame) -> None:
     df[COLUMNS_RE_SHUFFLED].to_csv(
-        DATA_DIR.joinpath('processed').joinpath('dataset.csv'),
+        DATA_DIR / 'processed' / 'dataset.csv',
         index=False
     )
 
 
 def main():
-    with zipfile.ZipFile(
-        DATA_DIR.joinpath('raw').joinpath(FILE_NAME)
-    ) as archive:
+    with zipfile.ZipFile(DATA_DIR / 'raw' / FILE_NAME) as archive:
         (
             process_archive(archive)
             .pipe(clean_data)

@@ -22,7 +22,9 @@ class Shape(Enum):
     STAMPS = 5, 2
 
 
-DATA_DIR = Path(__file__).parent.parent.joinpath('data')
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+DATA_DIR = BASE_DIR / 'data'
 
 FILE_NAME_ORIGINAL = 'urovni_p_i_n_tunguski.rar'
 
