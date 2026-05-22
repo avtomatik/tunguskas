@@ -8,7 +8,7 @@ def export_data():
 
     conn.execute(
         f"""
-        COPY mart.daily_levels
+        COPY mart.daily_levels_enriched
         TO '{EXPORT_DIR / "dataset.parquet"}'
         (FORMAT PARQUET)
     """
@@ -16,7 +16,7 @@ def export_data():
 
     conn.execute(
         f"""
-        COPY mart.daily_levels
+        COPY mart.daily_levels_enriched
         TO '{EXPORT_DIR / "dataset.csv"}'
         (HEADER, DELIMITER ',')
     """
