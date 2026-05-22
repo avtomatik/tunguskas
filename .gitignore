@@ -172,3 +172,9 @@ cython_debug/
 
 # Apple Desktop Services Store
 .DS_Store
+
+# DuckDB
+*.duckdb
+
+# VS Code
+.vscode/
