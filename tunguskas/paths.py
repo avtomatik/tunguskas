@@ -8,3 +8,6 @@ EXPORT_DIR = DATA_DIR / "exports"
 SQL_DIR = BASE_DIR / "sql"
 WAREHOUSE_PATH = WAREHOUSE_DIR / "tunguska.duckdb"
 FILE_NAME = "archive.zip"
+
+for directory in (WAREHOUSE_DIR, EXPORT_DIR):
+    directory.mkdir(parents=True, exist_ok=True)

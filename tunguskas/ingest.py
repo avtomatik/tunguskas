@@ -4,8 +4,7 @@ from datetime import datetime, timezone
 import duckdb
 import pandas as pd
 
-from tunguskas.constants import LOCATIONS, YEARS
-from tunguskas.enums import Shape
+from tunguskas.enums import Location, TableShape
 from tunguskas.paths import FILE_NAME, RAW_DIR
 from tunguskas.warehouse import get_connection
 
@@ -22,9 +21,9 @@ def ingest_file(
         river_post = None
         gauge_zero = None
         for chunk in df_pack:
-            if chunk.shape == Shape.STAMPS.value:
+            if chunk.shape == TableShape.STAMPS.value:
                 post_id, _, river_post, gauge_zero, _ = chunk.iloc[:, -1]
-            elif chunk.shape == Shape.DATA.value:
+            elif chunk.shape == TableShape.DATA.value:
                 chunk.drop(range(2), inplace=True)
                 chunk.drop(chunk.tail(7).index, inplace=True)
                 melted = pd.melt(
@@ -33,11 +32,7 @@ def ingest_file(
                     value_vars=chunk.columns[1:],
                     ignore_index=False,
                 )
-                melted.columns = [
-                    "day",
-                    "month",
-                    "raw_value",
-                ]
+                melted.columns = ["day", "month", "raw_value"]
                 melted["year"] = year
                 melted["location"] = location
                 melted["river_post"] = river_post
@@ -68,10 +63,9 @@ def ingest_file(
 
 
 def ingest_archive() -> None:
-    conn = get_connection()
-    archive_path = RAW_DIR / FILE_NAME
-    with zipfile.ZipFile(archive_path) as archive:
-        for location in LOCATIONS:
-            for year in YEARS:
-                ingest_file(conn, archive, location, year)
-    conn.close()
+    with get_connection() as conn:
+        archive_path = RAW_DIR / FILE_NAME
+        with zipfile.ZipFile(archive_path) as archive:
+            for location in Location:
+                for year in range(2008, 2018):
+                    ingest_file(conn, archive, location.value, year)
