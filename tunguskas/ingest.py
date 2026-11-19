@@ -5,7 +5,7 @@ import duckdb
 import pandas as pd
 
 from tunguskas.enums import Location, TableShape
-from tunguskas.paths import FILE_NAME, RAW_DIR
+from tunguskas.paths import RAW_ARCHIVE_PATH
 from tunguskas.warehouse import get_connection
 
 
@@ -64,8 +64,7 @@ def ingest_file(
 
 def ingest_archive() -> None:
     with get_connection() as conn:
-        archive_path = RAW_DIR / FILE_NAME
-        with zipfile.ZipFile(archive_path) as archive:
+        with zipfile.ZipFile(RAW_ARCHIVE_PATH) as archive:
             for location in Location:
                 for year in range(2008, 2018):
                     ingest_file(conn, archive, location.value, year)
